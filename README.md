@@ -1,4 +1,4 @@
-# Destroyer-Of-Worlds
+# Destroyer Of Worlds
 A tool I threw together for Minecraft speedrunners to automatically delete old worlds.
 
 This is pretty simple and should be self-explanatory, but just in case:
