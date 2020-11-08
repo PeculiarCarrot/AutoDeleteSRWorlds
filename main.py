@@ -70,7 +70,7 @@ def stopObserver():
     dirObserver.join()
 
 def dirIsNewWorld(dir):
-    return len(re.findall(r'\\New World \(\+?\d+\)$', dir)) > 0 or len(re.findall(r'\\New World$', dir)) > 0
+    return len(re.findall(r'\\New World \(\+?\d+\)$', dir)) > 0 or len(re.findall(r'\\New World-*$', dir)) > 0
 
 def getAllSubfolders():
     return [ f.path for f in os.scandir(dirPath) if f.is_dir() ]
@@ -103,9 +103,12 @@ def purge(event):
             continue
         shouldPurge = dirIsNewWorld(save)
         if shouldPurge:
-            shutil.rmtree(save)
-            count += 1
             print("Purging " + save)
+            try:
+                shutil.rmtree(save)
+                count += 1
+            except PermissionError:
+                print(f"Don't have permission to remove {save}, skipping...")
     if count > 0:
         infoLabel['text'] = f"[{datetime.now().strftime('%H:%M:%S')}] Deleted {count} {'world' if count == 1 else 'worlds'}.";
 
@@ -170,7 +173,6 @@ def loadData():
         with open(SAVE_PATH, "r") as f:
             dirPath = f.readline().rstrip()
             hidePath = f.readline().rstrip() == "True"
-            toggleStart()
 
     if hidePath:
         showHideButton['text'] = SHOW_PATH_TXT
